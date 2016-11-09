@@ -10,13 +10,13 @@ import java.util.Date;
 
 public class Account {
 
-    @SerializedName("email")
+    @SerializedName("Email")
     private String email;
 
-    @SerializedName("fullname")
+    @SerializedName("FullName")
     private String fullName;
 
-    @SerializedName("avatarbase64")
+    @SerializedName("AvatarBase64")
     private String avatarBase64;
 
     @SerializedName("apikey")
@@ -25,17 +25,35 @@ public class Account {
     @SerializedName("password")
     private String password;
 
-    @SerializedName("token")
-    private String token;
+    @SerializedName("access_token")
+    private String access_token;
 
-    @SerializedName("expiration")
-    private Date expiration;
+    @SerializedName(".expires")
+    private Date expires;
 
     @SerializedName("granttype")
     private String grantType;
 
     @SerializedName("username")
     private String userName;
+
+    @SerializedName("Id")
+    private String id;
+
+    @SerializedName("HasRegistered")
+    private Boolean hasRegistered;
+
+    @SerializedName("LoginProvider")
+    private String loginProvider;
+
+    @SerializedName("LastCheckInLongitude")
+    private Double lastCheckInLongitude;
+
+    @SerializedName("LastCheckInLatitude")
+    private Double lastCheckInLatitude;
+
+    @SerializedName("LastCheckInDateTime")
+    private Date lastCheckInDateTime;
 
     public Account(){
 
@@ -49,7 +67,23 @@ public class Account {
         this.password = password;
     }
 
-//    public Account(String grantType, String fullName, String password) {
+    public Account(String id, String email, Boolean hasRegistered, String loginProvider, String fullName,
+                   String avatarBase64, Double lastCheckInLongitude, Double lastCheckInLatitude, Date lastCheckInDateTime) {
+        this.id = id;
+        this.email = email;
+        this.hasRegistered = hasRegistered;
+        this.loginProvider = loginProvider;
+        this.fullName = fullName;
+        this.avatarBase64 = avatarBase64;
+        this.lastCheckInLongitude = lastCheckInLongitude;
+        this.lastCheckInLatitude = lastCheckInLatitude;
+        this.lastCheckInDateTime = lastCheckInDateTime;
+    }
+
+    public Account(String avatarBase64) {
+        this.avatarBase64 = avatarBase64;
+    }
+    //    public Account(String grantType, String fullName, String password) {
 //        this.grantType = grantType;
 //        this.fullName = fullName;
 //        this.password = password;
@@ -96,18 +130,66 @@ public class Account {
     }
 
     public String getToken() {
-        return token;
+        return access_token;
     }
 
     public void setToken(String token) {
-        this.token = token;
+        this.access_token = access_token;
     }
 
-    public Date getExpiration() {
-        return expiration;
+    public Date getExpires() {
+        return expires;
     }
 
-    public void setExpiration(Date expiration) {
-        this.expiration = expiration;
+    public void setExpires(Date expires) {
+        this.expires = expires;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Boolean getHasRegistered() {
+        return hasRegistered;
+    }
+
+    public void setHasRegistered(Boolean hasRegistered) {
+        this.hasRegistered = hasRegistered;
+    }
+
+    public String getLoginProvider() {
+        return loginProvider;
+    }
+
+    public void setLoginProvider(String loginProvider) {
+        this.loginProvider = loginProvider;
+    }
+
+    public Double getLastCheckInLongitude() {
+        return lastCheckInLongitude;
+    }
+
+    public void setLastCheckInLongitude(Double lastCheckInLongitude) {
+        this.lastCheckInLongitude = lastCheckInLongitude;
+    }
+
+    public Double getLastCheckInLatitude() {
+        return lastCheckInLatitude;
+    }
+
+    public void setLastCheckInLatitude(Double lastCheckInLatitude) {
+        this.lastCheckInLatitude = lastCheckInLatitude;
+    }
+
+    public Date getLastCheckInDateTime() {
+        return lastCheckInDateTime;
+    }
+
+    public void setLastCheckInDateTime(Date lastCheckInDateTime) {
+        this.lastCheckInDateTime = lastCheckInDateTime;
     }
 }

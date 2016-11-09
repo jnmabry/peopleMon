@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.peoplemon.Models.Account;
 import com.example.peoplemon.Network.RestClient;
+import com.example.peoplemon.Network.UserStore;
 import com.example.peoplemon.R;
 import com.example.peoplemon.Stages.GameMainStage;
 import com.example.peoplemon.Stages.RegisterStage;
@@ -98,11 +99,11 @@ public class LoginView extends LinearLayout {
                     if (response.isSuccessful()){
 
                         //Get user that is returned
-//                        Account authUser = response.body();
+                        Account authUser = response.body();
 
                         //Get auth token and expiration date
-//                        UserStore.getInstance().setToken(authUser.getToken());
-//                        UserStore.getInstance().setTokenExpiration(authUser.getExpiration());
+                        UserStore.getInstance().setToken(authUser.getToken());
+                        UserStore.getInstance().setTokenExpiration(authUser.getExpires());
 
                         //Get main flow and set to single history
                         Flow flow = getMainFlow();

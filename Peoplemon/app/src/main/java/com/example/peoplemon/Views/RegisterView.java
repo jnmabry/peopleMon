@@ -14,7 +14,7 @@ import com.example.peoplemon.Models.Account;
 import com.example.peoplemon.Network.RestClient;
 import com.example.peoplemon.PeoplemonApplication;
 import com.example.peoplemon.R;
-import com.example.peoplemon.Stages.GameMainStage;
+import com.example.peoplemon.Stages.LoginStage;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -104,13 +104,16 @@ public class RegisterView extends LinearLayout {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()){
 
+                        // Old Auth Info
 //                        Account regUser ashley= response.body();
 //                        UserStore.getInstance().setToken(regUser.getToken());
 //                        UserStore.getInstance().setTokenExpiration(regUser.getExpiration());
 
+                        //New Authorization Info
+
                         Flow flow = PeoplemonApplication.getMainFlow();
-                        History newHistory = History.single(new GameMainStage());
-                        flow.setHistory(newHistory, Flow.Direction.REPLACE);
+                        History newHistory = History.single(new LoginStage());
+                        flow.setHistory(newHistory, Flow.Direction.BACKWARD);
 
                     }else {
                         resetView();
@@ -128,6 +131,8 @@ public class RegisterView extends LinearLayout {
         }
 
     }
+
+
 
     private void resetView(){
         registerButton.setEnabled(true);
