@@ -55,6 +55,12 @@ public class Account {
     @SerializedName("LastCheckInDateTime")
     private Date lastCheckInDateTime;
 
+    @SerializedName("Longitude")
+    private double longitude;
+
+    @SerializedName("Latitude")
+    private double latitude;
+
     public Account(){
 
     }
@@ -80,14 +86,22 @@ public class Account {
         this.lastCheckInDateTime = lastCheckInDateTime;
     }
 
-    public Account(String avatarBase64) {
+    public Account(String avatarBase64, String fullName) {
         this.avatarBase64 = avatarBase64;
+        this.fullName = fullName;
     }
+
     //    public Account(String grantType, String fullName, String password) {
 //        this.grantType = grantType;
 //        this.fullName = fullName;
 //        this.password = password;
 //    }
+
+
+    public Account(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     public String getEmail() {
         return email;
@@ -191,5 +205,21 @@ public class Account {
 
     public void setLastCheckInDateTime(Date lastCheckInDateTime) {
         this.lastCheckInDateTime = lastCheckInDateTime;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

@@ -1,13 +1,18 @@
 package com.example.peoplemon;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -28,6 +33,7 @@ import com.example.peoplemon.Stages.LoginStage;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private ScreenplayDispatcher dispatcher;
     private Context context;
 
+    public Bundle savedInstanceState;
+
     @Bind(R.id.container)
     RelativeLayout container;
 
@@ -54,6 +62,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        if (Build.VERSION.SDK_INT >= 23) {
+//            if (!(ContextCompat.checkSelfPermission(this,
+//                    android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+//                    PackageManager.PERMISSION_GRANTED)) {
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//            }
+//            if (!(ContextCompat.checkSelfPermission(this,
+//                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+//                    PackageManager.PERMISSION_GRANTED)) {
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//            }
+//        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+
+            if ((ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+
+            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            }
+        }
+
+
         ButterKnife.bind(this);
         flow = PeoplemonApplication.getMainFlow();
         dispatcher = new ScreenplayDispatcher(this, container);
@@ -123,21 +162,22 @@ public class MainActivity extends AppCompatActivity {
                 String imageString = cursor.getString(columnIndex);
                 cursor.close();
 
+                File file = new File(imageString);
+
                 //Convert to Bitmap Array
-                Bitmap bm = BitmapFactory.decodeFile(imageString);
+                Bitmap bm = BitmapFactory.decodeFile(file.getAbsolutePath());
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
                 byte[] b = baos.toByteArray();
 
-                //Take the bitmap Array and encode it to Base64
+                //Take the bitmap Array and e
+                // encode it to Base64
                 String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 
                 Log.d("***BASE64****", encodedImage);
                 makeApiCallForProfile(encodedImage);
 
                 //Make API Call to Send Base64 to Server
-
-
                 EventBus.getDefault().post(new ImageLoadedEvent(imageString));
 
             }else{
@@ -146,13 +186,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } catch (Exception e){
-            Toast.makeText(this,"Error Retrieving Image", Toast.LENGTH_LONG).show();
-        }
+            Toast.makeText(this,"Error Retrieving Image", Toast.LENGTH_LONG).show();}
     }
 
     private void makeApiCallForProfile(String imageString){
 
-        Account user = new Account(imageString);
+        Account user = new Account(imageString, null);
         RestClient restClient = new RestClient();
         restClient.getApiService().postUserInfo(user).enqueue(new Callback<Void>() {
 

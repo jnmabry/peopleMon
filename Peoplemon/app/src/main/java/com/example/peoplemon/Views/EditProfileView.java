@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.util.Base64;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,7 +41,7 @@ public class EditProfileView extends RelativeLayout{
     EditText editNameField;
 
     @Bind(R.id.change_username)
-    Button editProfileSubmit;
+    Button changeUsername;
 
     @Bind(R.id.user_name)
     TextView userName;
@@ -96,22 +95,17 @@ public class EditProfileView extends RelativeLayout{
         //Captures input from edit name field to a variable
         String name = editNameField.getText().toString();
 
+        Account account = new Account(null,name);
         RestClient restClient = new RestClient();
-        restClient.getApiService().getUserInfo().enqueue(new Callback<Account>() {
+        restClient.getApiService().postUserInfo(account).enqueue(new Callback<Void>() {
 
             @Override
-            public void onResponse(Call<Account> call, Response<Account> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 // Is the server response between 200 to 299
                 if (response.isSuccessful()){
-
-                    //Get user that is returned
-                    Account authUser = response.body();
-                    Log.d(authUser.getFullName(),"****RESPONSE NAME****");
-                    Log.d(authUser.getEmail(),"****RESPONSE EMAIL****");
-                    Log.d(authUser.getAvatarBase64(),"****RESPONSE AVATAR****");
-
-                    userName.setText(authUser.getFullName());
-
+                    makeApiCallForProfile();
+                    Toast.makeText(context,"Changed Profile Name Successfully", Toast.LENGTH_LONG).show();
+                   // makeApiCallForProfile();
                 }else{
                     resetView();
                     Toast.makeText(context,"Get User Info Failed" + ": " + response.code(), Toast.LENGTH_LONG).show();
@@ -119,7 +113,7 @@ public class EditProfileView extends RelativeLayout{
             }
 
             @Override
-            public void onFailure(Call<Account> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 resetView();
                 Toast.makeText(context,"Get User Info Failed", Toast.LENGTH_LONG).show();
             }
@@ -129,7 +123,7 @@ public class EditProfileView extends RelativeLayout{
     }
 
     private void resetView(){
-        editProfileSubmit.setEnabled(true);
+        changeUsername.setEnabled(true);
 //        progressBar.setVisibility(GONE);
     }
 
@@ -144,9 +138,9 @@ public class EditProfileView extends RelativeLayout{
 
                     //Get user that is returned
                     Account authUser = response.body();
-                    Log.d(authUser.getFullName(),"****RESPONSE NAME****");
-                    Log.d(authUser.getEmail(),"****RESPONSE EMAIL****");
-                    Log.d(authUser.getAvatarBase64(),"****RESPONSE AVATAR****");
+//                    Log.d(authUser.getFullName(),"****RESPONSE NAME****");
+//                    Log.d(authUser.getEmail(),"****RESPONSE EMAIL****");
+//                    Log.d(authUser.getAvatarBase64(),"****RESPONSE AVATAR****");
 
                     String encodedImage = authUser.getAvatarBase64();
                     byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
